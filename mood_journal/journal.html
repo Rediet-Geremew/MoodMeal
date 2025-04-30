@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Journal Detail</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Journal Detail</h1>
+  <div id="journalDetail"></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const data = JSON.parse(localStorage.getItem(id));
+
+    const container = document.getElementById("journalDetail");
+
+    if (data) {
+      container.innerHTML = `
+        <p><strong>Date:</strong> ${data.date}</p>
+        <p><strong>Meal Type:</strong> ${data.mealType}</p>
+        <p><strong>Mood Before:</strong> ${data.moodBefore}</p>
+        <p><strong>Mood After:</strong> ${data.moodAfter}</p>
+        <p><strong>Tags:</strong> ${data.tags.join(", ")}</p>
+        <p><strong>Journal Entry:</strong><br>${data.journalText}</p>
+      `;
+    } else {
+      container.textContent = "No entry found.";
+    }
+  </script>
+</body>
+</html>

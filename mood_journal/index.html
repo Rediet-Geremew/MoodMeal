@@ -113,6 +113,48 @@
           </div>
         </main>
     </div>
+
+    <dialog id="entryDialog">
+        <form method="dialog" id="entryForm">
+          <h2>Add New Journal Entry</h2>
+      
+          <label>
+            🗓️ Date:
+            <input type="date" name="date" required>
+          </label>
+      
+          <label>
+            🍽️ Meal Type:
+            <input type="text" name="mealType" placeholder="e.g., Breakfast, Lunch" required>
+          </label>
+      
+          <label>
+            Mood Before:
+            <input type="text" name="moodBefore" placeholder="e.g., 😐" required>
+          </label>
+      
+          <label>
+            Mood After:
+            <input type="text" name="moodAfter" placeholder="e.g., 😊" required>
+          </label>
+      
+          <label>
+            Tags (comma separated):
+            <input type="text" name="tags" placeholder="e.g., comfort food, guiltfree">
+          </label>
+      
+          <label>
+            📝 Your Journal:
+            <textarea name="journalText" rows="5" placeholder="Write your experience here..."></textarea>
+          </label>
+      
+          <div class="formActions">
+            <button type="submit">Add Entry</button>
+            <button type="button" id="closeDialog">Cancel</button>
+          </div>
+        </form>
+      </dialog>
+      
 <script src="script.js"></script> 
 </body>
 </html>
