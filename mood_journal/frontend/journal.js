@@ -3,11 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const dialog = document.getElementById('entryDialog');
     const form = document.getElementById('entryForm');
 
-    // Dialog controls
+    
     document.getElementById('add_entry').addEventListener('click', () => dialog.showModal());
     document.getElementById('closeDialog').addEventListener('click', () => dialog.close());
 
-    // Form submission
+    
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitBtn = form.querySelector('button[type="submit"]');
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response = await fetch(`${API_BASE}/read.php`);
             
-            // Check if response is OK first
+           
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
@@ -72,6 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Initial load
+    
     loadEntries();
 });

@@ -1,4 +1,4 @@
-/* Base styles */
+
 * {
   margin: 0;
   padding: 0;
@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: white; /* Changed to white as requested */
+  background-color: white; 
   min-height: 100vh;
 }
 
@@ -15,15 +15,15 @@ body {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px 20px 20px; /* Removed top padding to allow header to extend */
+  padding: 0 20px 20px 20px;
 }
 
-/* Header styles - updated to match the image */
+
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffbb00; /* Bright yellow/orange background */
+  background-color: #ffbb00; 
   padding: 15px 40px;
   width: 100%;
   margin-bottom: 30px;
@@ -35,7 +35,7 @@ header {
 }
 
 .logo {
-  height: 40px; /* Adjust based on your logo size */
+  height: 40px; 
 }
 
 nav {
@@ -44,7 +44,7 @@ nav {
 }
 
 nav a {
-  color: white; /* White text as shown in the image */
+  color: white;
   text-decoration: none;
   font-weight: bold;
   font-size: 18px;
@@ -78,14 +78,14 @@ nav a:hover {
   background-color: #d45e15;
 }
 
-/* Main content area */
+
 .main {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 30px;
 }
 
-/* Journal entry card style */
+
 .entryCard {
   position: relative;
   background-color: #fff6e6;
@@ -100,7 +100,7 @@ nav a:hover {
   text-align: center;
 }
 
-/* Spiral binding */
+
 .entryCard::before {
   content: "";
   position: absolute;
@@ -137,7 +137,7 @@ nav a:hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* Add decorative lines like in the image */
+
 .entryCard p:last-child::after {
   content: "";
   display: block;
@@ -156,7 +156,7 @@ nav a:hover {
   margin: 5px auto 15px;
 }
 
-/* Dialog styles */
+
 dialog {
   border: none;
   border-radius: 15px;
@@ -229,7 +229,7 @@ input, textarea {
   color: #333;
 }
 
-/* Responsive design */
+
 @media (max-width: 768px) {
   .main {
       grid-template-columns: 1fr;
@@ -251,7 +251,7 @@ input, textarea {
   }
 }
 
-/* Additional styles to match the image more closely */
+
 .entryCard {
   transition: transform 0.3s ease;
 }
@@ -274,9 +274,9 @@ input, textarea {
   content: "😋 ";
 }
 
-/* Fix for the header to extend full width */
+
 body {
-  overflow-x: hidden; /* Prevent horizontal scrollbar */
+  overflow-x: hidden; 
 }
 
 .fullContainer {
