@@ -15,7 +15,8 @@ body {
   }
   
   .card button {
-    font-size: 0.875rem;
+    font-size: 0.975rem;
+
   }
   .footer {
     background-color: #f9f9f9;
@@ -92,12 +93,12 @@ body {
 
   .social-icons a {
     margin-left: 0.75rem;
-    color: #666;
+    color: #667;
     font-size: 1.2rem;
   }
 
   .logo {
-    height: 80px;
+    height: 90px;
     object-fit: contain;
   }
 
