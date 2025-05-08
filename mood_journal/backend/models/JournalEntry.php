@@ -1,13 +1,13 @@
 <?php
 class JournalEntry {
-    public $user_id;
-    public $mood_before;
-    public $mood_after;
-    public $food_name;
-    public $food_type;
-    public $image_url;
-    public $journal_text;
-    public $entry_date;
+    private $user_id;
+    private $mood_before;
+    private $mood_after;
+    private $food_name;
+    private $food_type;
+    private $image_url;
+    private $journal_text;
+    private $entry_date;
 
     public function __construct($user_id, $mood_before, $mood_after, $food_name, $food_type, $image_url, $journal_text, $entry_date) {
         $this->user_id = $user_id;
@@ -21,26 +21,19 @@ class JournalEntry {
     }
 
     public function isValid() {
-        return !empty($this->user_id) &&
-               !empty($this->mood_before) &&
-               !empty($this->mood_after) &&
-               !empty($this->food_name) &&
-               !empty($this->food_type) &&
-               !empty($this->journal_text) &&
+        return !empty($this->mood_before) && 
+               !empty($this->mood_after) && 
+               !empty($this->food_name) && 
+               !empty($this->food_type) && 
                !empty($this->entry_date);
     }
 
     public function save($conn) {
         $stmt = $conn->prepare("INSERT INTO Journal_Entries 
-            (user_id, mood_before, mood_after, food_name, food_type, image_url, journal_text, entry_date, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-
-        if (!$stmt) {
-            error_log("Prepare failed: " . $conn->error);
-            return false;
-        }
-
-        $stmt->bind_param("isssssss", 
+            (user_id, mood_before, mood_after, food_name, food_type, image_url, journal_text, entry_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            
+        return $stmt->execute([
             $this->user_id,
             $this->mood_before,
             $this->mood_after,
@@ -49,9 +42,6 @@ class JournalEntry {
             $this->image_url,
             $this->journal_text,
             $this->entry_date
-        );
-
-        return $stmt->execute();
+        ]);
     }
 }
-?>

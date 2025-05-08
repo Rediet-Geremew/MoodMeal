@@ -1,88 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mood Journal | Mood Meal</title>
-  <link rel="stylesheet" href="journal.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Journal</title>
+    <link rel="stylesheet" href="journal.css">
 </head>
 <body>
-  <div class="fullContainer">
-  <!-- Header -->
-<header style="background-color: #ffc107; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;">
-    <div style="display: flex; align-items: center;">
-      <img src="path/to/logo.png" alt="Mood Meal Logo" style="height: 40px;" />
+    <div class="fullContainer">
+        <header>
+            <img src="images/logo.png" alt="Logo" class="logo">
+            <nav>
+                <a href="#">Home</a>
+                <a href="#">Mood Log</a>
+                <a href="#">Favorites</a>
+                <a href="#">Suggestions</a>
+            </nav>
+        </header>
+
+        <div class="entryAdder">
+            <button id="add_entry">➕ Add New Entry</button>
+        </div>
+
+        <main class="main" id="entriesContainer"></main>
+
+        <dialog id="entryDialog">
+            <form id="entryForm" enctype="multipart/form-data">
+                <h2>New Journal Entry</h2>
+                
+                <div class="form-group">
+                    <label>Date: <input type="date" name="entry_date" required></label>
+                    <label>Meal Type: <input type="text" name="food_type" required></label>
+                </div>
+
+                <div class="form-group">
+                    <label>Food Name: <input type="text" name="food_name" required></label>
+                    <label>Mood Before: <input type="text" name="mood_before" required></label>
+                    <label>Mood After: <input type="text" name="mood_after" required></label>
+                </div>
+
+                <div class="form-group">
+                    <label>Image: <input type="file" name="image"></label>
+                </div>
+
+                <div class="form-group">
+                    <label>Journal Entry: <textarea name="journal_text" rows="4"></textarea></label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit">Save</button>
+                    <button type="button" id="closeDialog">Cancel</button>
+                </div>
+            </form>
+        </dialog>
+
+        <script src="journal.js"></script>
     </div>
-    <nav style="display: flex; gap: 2rem;">
-      <a href="#" style="color: white; text-decoration: none; font-weight: 500;">Home</a>
-      <a href="#" style="color: white; text-decoration: none; font-weight: 500;">Mood Log</a>
-      <a href="#" style="color: white; text-decoration: none; font-weight: 500;">Favorites</a>
-      <a href="#" style="color: white; text-decoration: none; font-weight: 500;">Suggestions</a>
-    </nav>
-  </header>
-  
-
-    <div class="entryAdder">
-      <button id="add_entry">Add New Entry</button>
-    </div>
-
-    <main class="main" id="entriesContainer">
-      <!-- Journal cards will be dynamically inserted here -->
-    </main>
-  </div>
-
-  <!-- Dialog Form -->
-  <dialog id="entryDialog">
-    <form id="entryForm">
-      <h2>Add New Journal Entry</h2>
-
-      <label>
-        🗓️ Date:
-        <input type="date" name="entry_date" required />
-      </label>
-
-      <label>
-        🍽️ Meal Type:
-        <input type="text" name="food_type" placeholder="e.g., Breakfast, Lunch" required />
-      </label>
-
-      <label>
-        Food Name:
-        <input type="text" name="food_name" placeholder="e.g., Pasta, Salad" required />
-      </label>
-
-      <label>
-        Mood Before:
-        <input type="text" name="mood_before" placeholder="e.g., 😐" required />
-      </label>
-
-      <label>
-        Mood After:
-        <input type="text" name="mood_after" placeholder="e.g., 😊" required />
-      </label>
-
-      <label>
-        Tags (comma separated):
-        <input type="text" name="tags" placeholder="e.g., comfort food, guiltfree" />
-      </label>
-
-      <label>
-        🖼️ Image:
-        <input type="file" name="image" accept="image/*" />
-      </label>
-
-      <label>
-        📝 Your Journal:
-        <textarea name="journal_text" rows="5" placeholder="Write your experience here..."></textarea>
-      </label>
-
-      <div class="formActions">
-        <button type="submit">Add Entry</button>
-        <button type="button" id="closeDialog">Cancel</button>
-      </div>
-    </form>
-  </dialog>
-
-  <script src="journal.js"></script>
 </body>
 </html>

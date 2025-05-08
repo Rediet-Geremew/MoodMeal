@@ -1,206 +1,284 @@
-/* Reset and font setup */
+/* Base styles */
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
 }
 
 body {
-  background-color: #fff8f0;
-  color: #333;
-  line-height: 1.6;
-}
-
-.fullContainer {
-  display: flex;
-  flex-direction: column;
+  background-color: white; /* Changed to white as requested */
   min-height: 100vh;
 }
 
-/* Header */
+.fullContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 20px 20px; /* Removed top padding to allow header to extend */
+}
+
+/* Header styles - updated to match the image */
 header {
-  background-color: #ffa500;
-  padding: 1rem 2rem;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  background-color: #ffbb00; /* Bright yellow/orange background */
+  padding: 15px 40px;
+  width: 100%;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw; /* Full width */
 }
 
-header nav a {
-  color: white;
+.logo {
+  height: 40px; /* Adjust based on your logo size */
+}
+
+nav {
+  display: flex;
+  gap: 25px;
+}
+
+nav a {
+  color: white; /* White text as shown in the image */
   text-decoration: none;
-  font-weight: 600;
-  transition: opacity 0.3s ease;
+  font-weight: bold;
+  font-size: 18px;
+  transition: opacity 0.3s;
 }
 
-header nav a:hover {
+nav a:hover {
   opacity: 0.8;
 }
 
-/* Entry Add Button */
+/* Add Entry Button */
 .entryAdder {
   display: flex;
-  justify-content: center;
-  padding: 1.5rem;
+  justify-content: flex-end;
+  margin-bottom: 30px;
 }
 
 #add_entry {
-  background-color: #ffb347;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: bold;
+  background-color: #e86c1c;
   color: white;
-  border-radius: 8px;
+  border: none;
+  border-radius: 10px;
+  padding: 15px 25px;
+  font-size: 20px;
   cursor: pointer;
-  transition: background 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: background-color 0.3s;
 }
 
 #add_entry:hover {
-  background-color: #ff9800;
+  background-color: #d45e15;
 }
 
-/* Journal Entries */
+/* Main content area */
 .main {
-  padding: 2rem;
   display: grid;
-  gap: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
 }
 
-.journal-card {
-  background-color: #fffaf4;
-  border: 2px solid #ffe0b2;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
+/* Journal entry card style */
+.entryCard {
+  position: relative;
+  background-color: #fff6e6;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  border: 8px solid #e86c1c;
+  border-left-width: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.journal-card:hover {
-  transform: translateY(-5px);
+/* Spiral binding */
+.entryCard::before {
+  content: "";
+  position: absolute;
+  left: -15px;
+  top: 30px;
+  width: 25px;
+  height: 10px;
+  background-color: #888;
+  border-radius: 5px;
+  box-shadow: 0 30px 0 #888, 0 60px 0 #888;
 }
 
-.journal-card h3 {
-  color: #ff8c00;
-  margin-bottom: 0.5rem;
+.entryCard h3 {
+  color: #c25614;
+  font-size: 24px;
+  margin-bottom: 15px;
 }
 
-.journal-card p {
-  margin-bottom: 0.8rem;
+.entryCard p {
+  margin-bottom: 10px;
+  color: #333;
+  width: 100%;
+  padding: 0 10px;
 }
 
-.journal-card img {
-  max-width: 100%;
-  border-radius: 10px;
-  margin-top: 1rem;
+.entryCard img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 15px 0;
+  background-color: #ffe8cc;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.tags {
-  margin-top: 1rem;
+/* Add decorative lines like in the image */
+.entryCard p:last-child::after {
+  content: "";
+  display: block;
+  width: 80%;
+  height: 2px;
+  background-color: #ffe0b3;
+  margin: 15px auto 5px;
 }
 
-.tags span {
-  background-color: #ffe0b2;
-  color: #8d4500;
-  font-size: 0.85rem;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  margin-right: 0.4rem;
+.entryCard p:last-child::before {
+  content: "";
+  display: block;
+  width: 80%;
+  height: 2px;
+  background-color: #ffe0b3;
+  margin: 5px auto 15px;
 }
 
-/* Dialog (Modal Form) */
-dialog::backdrop {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
+/* Dialog styles */
 dialog {
   border: none;
-  border-radius: 10px;
-  padding: 2rem;
-  max-width: 500px;
+  border-radius: 15px;
+  padding: 30px;
+  background-color: #fff6e6;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  max-width: 600px;
   width: 90%;
-  background-color: #fffefb;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  animation: fadeIn 0.3s ease-in-out;
 }
 
-dialog h2 {
-  margin-bottom: 1rem;
-  color: #ff8c00;
-  font-size: 1.5rem;
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-form label {
-  display: block;
-  margin-bottom: 1rem;
-  font-weight: 500;
-  color: #444;
+#entryForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-form input[type="text"],
-form input[type="date"],
-form input[type="file"],
-form textarea {
-  width: 100%;
-  padding: 0.6rem;
-  margin-top: 0.3rem;
-  border: 1px solid #ffcc80;
-  border-radius: 6px;
-  background-color: #fffdf8;
-  font-size: 1rem;
+#entryForm h2 {
+  color: #c25614;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
-form textarea {
-  resize: vertical;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.formActions {
+.form-group label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+input, textarea {
+  padding: 10px;
+  border: 2px solid #e86c1c;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 15px;
+  margin-top: 10px;
 }
 
-.formActions button {
-  padding: 0.6rem 1.2rem;
+.form-actions button {
+  padding: 10px 20px;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
+  font-weight: bold;
 }
 
-.formActions button[type="submit"] {
-  background-color: #ff9800;
+.form-actions button[type="submit"] {
+  background-color: #e86c1c;
   color: white;
 }
 
-.formActions button[type="submit"]:hover {
-  background-color: #f57c00;
-}
-
-#closeDialog {
+.form-actions button[type="button"] {
   background-color: #ccc;
   color: #333;
 }
 
-#closeDialog:hover {
-  background-color: #aaa;
+/* Responsive design */
+@media (max-width: 768px) {
+  .main {
+      grid-template-columns: 1fr;
+  }
+  
+  header {
+      padding: 15px 20px;
+      flex-direction: column;
+      gap: 15px;
+  }
+  
+  nav {
+      width: 100%;
+      justify-content: space-between;
+  }
+  
+  .form-group {
+      flex-direction: column;
+  }
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+/* Additional styles to match the image more closely */
+.entryCard {
+  transition: transform 0.3s ease;
+}
+
+.entryCard:hover {
+  transform: translateY(-5px);
+}
+
+/* Style for mood indicators */
+.entryCard p:nth-child(3),
+.entryCard p:nth-child(4) {
+  font-weight: bold;
+}
+
+.entryCard p:nth-child(3)::before {
+  content: "😊 ";
+}
+
+.entryCard p:nth-child(4)::before {
+  content: "😋 ";
+}
+
+/* Fix for the header to extend full width */
+body {
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+}
+
+.fullContainer {
+  position: relative;
 }

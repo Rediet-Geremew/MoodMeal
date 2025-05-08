@@ -1,79 +1,77 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const addEntryButton = document.getElementById("add_entry");
-    const entryDialog = document.getElementById("entryDialog");
-    const closeDialogButton = document.getElementById("closeDialog");
-    const entryForm = document.getElementById("entryForm");
+document.addEventListener("DOMContentLoaded", () => {
+    const API_BASE = 'http://localhost/MoodMeal/mood_journal/backend/api';
+    const dialog = document.getElementById('entryDialog');
+    const form = document.getElementById('entryForm');
 
-    // Open the dialog when the "Add New Entry" button is clicked
-    addEntryButton.addEventListener("click", function() {
-        entryDialog.showModal();
-    });
+    // Dialog controls
+    document.getElementById('add_entry').addEventListener('click', () => dialog.showModal());
+    document.getElementById('closeDialog').addEventListener('click', () => dialog.close());
 
-    // Close the dialog when the "Cancel" button is clicked
-    closeDialogButton.addEventListener("click", function() {
-        entryDialog.close();
-    });
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
 
-    // Handle form submission
-    entryForm.addEventListener("submit", function(event) {
-        event.preventDefault();
+        try {
+            const formData = new FormData(form);
+            const response = await fetch(`${API_BASE}/create.php`, {
+                method: 'POST',
+                body: formData
+            });
 
-        const formData = new FormData(entryForm);
-
-        // Use fetch API to submit the form data to the PHP backend
-        fetch("add_journal_entry.php", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Journal entry added successfully!");
-                entryDialog.close();
-                loadEntries();
-            } else {
-                alert("Error: " + data.error);
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to save entry');
             }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("An error occurred while adding the entry.");
-        });
+
+            if (data.success) {
+                dialog.close();
+                form.reset();
+                await loadEntries();
+                alert('Entry saved successfully!');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message);
+        } finally {
+            submitBtn.disabled = false;
+        }
     });
 
-    // Function to load journal entries
-    function loadEntries() {
-        fetch("get_journal_entries.php")
-        .then(response => response.json())
-        .then(data => {
+    // Load entries
+    async function loadEntries() {
+        try {
+            const response = await fetch(`${API_BASE}/read.php`);
+            
+            // Check if response is OK first
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+            }
+    
+            const data = await response.json();
+            
             if (data.success) {
-                const entriesContainer = document.getElementById("entriesContainer");
-                entriesContainer.innerHTML = "";
-
-                data.entries.forEach(entry => {
-                    const entryCard = document.createElement("div");
-                    entryCard.classList.add("entryCard");
-
-                    // Add content to the entry card (e.g., mood, food, etc.)
-                    entryCard.innerHTML = `
+                const container = document.getElementById('entriesContainer');
+                container.innerHTML = data.entries.map(entry => `
+                    <div class="entryCard">
                         <h3>${entry.food_name} (${entry.food_type})</h3>
+                        <p>Date: ${entry.entry_date}</p>
                         <p>Mood Before: ${entry.mood_before}</p>
                         <p>Mood After: ${entry.mood_after}</p>
+                        ${entry.image_url ? `<img src="${entry.image_url}" alt="Food image">` : ''}
                         <p>${entry.journal_text}</p>
-                        <p>Tags: ${entry.tags.join(", ")}</p>
-                        <p>Date: ${entry.entry_date}</p>
-                        ${entry.image_url ? `<img src="${entry.image_url}" alt="Image for ${entry.food_name}" />` : ""}
-                    `;
-                    entriesContainer.appendChild(entryCard);
-                });
+                    </div>
+                `).join('');
             }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("An error occurred while loading entries.");
-        });
+        } catch (error) {
+            console.error('Error loading entries:', error);
+            alert('Failed to load entries: ' + error.message);
+        }
     }
 
-    // Load entries when the page loads
+    // Initial load
     loadEntries();
 });
