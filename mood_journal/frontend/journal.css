@@ -1,0 +1,206 @@
+/* Reset and font setup */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #fff8f0;
+  color: #333;
+  line-height: 1.6;
+}
+
+.fullContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background-color: #ffa500;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+header nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.3s ease;
+}
+
+header nav a:hover {
+  opacity: 0.8;
+}
+
+/* Entry Add Button */
+.entryAdder {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+#add_entry {
+  background-color: #ffb347;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+#add_entry:hover {
+  background-color: #ff9800;
+}
+
+/* Journal Entries */
+.main {
+  padding: 2rem;
+  display: grid;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.journal-card {
+  background-color: #fffaf4;
+  border: 2px solid #ffe0b2;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.journal-card:hover {
+  transform: translateY(-5px);
+}
+
+.journal-card h3 {
+  color: #ff8c00;
+  margin-bottom: 0.5rem;
+}
+
+.journal-card p {
+  margin-bottom: 0.8rem;
+}
+
+.journal-card img {
+  max-width: 100%;
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+.tags {
+  margin-top: 1rem;
+}
+
+.tags span {
+  background-color: #ffe0b2;
+  color: #8d4500;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  margin-right: 0.4rem;
+}
+
+/* Dialog (Modal Form) */
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+dialog {
+  border: none;
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  background-color: #fffefb;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+dialog h2 {
+  margin-bottom: 1rem;
+  color: #ff8c00;
+  font-size: 1.5rem;
+}
+
+form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: #444;
+}
+
+form input[type="text"],
+form input[type="date"],
+form input[type="file"],
+form textarea {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ffcc80;
+  border-radius: 6px;
+  background-color: #fffdf8;
+  font-size: 1rem;
+}
+
+form textarea {
+  resize: vertical;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.formActions button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.formActions button[type="submit"] {
+  background-color: #ff9800;
+  color: white;
+}
+
+.formActions button[type="submit"]:hover {
+  background-color: #f57c00;
+}
+
+#closeDialog {
+  background-color: #ccc;
+  color: #333;
+}
+
+#closeDialog:hover {
+  background-color: #aaa;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

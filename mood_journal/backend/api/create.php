@@ -2,13 +2,12 @@
 session_start();
 header("Content-Type: application/json");
 
-
 require_once "db.php"; 
 require_once "JournalEntry.php";
 require_once "JournalTag.php";
 require_once "JournalTagMap.php";
 
-
+// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode(["error" => "User not logged in."]);
@@ -17,25 +16,38 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+// Extract POST fields
+$mood_before   = trim($_POST['mood_before'] ?? '');
+$mood_after    = trim($_POST['mood_after'] ?? '');
+$food_name     = trim($_POST['food_name'] ?? '');
+$food_type     = trim($_POST['food_type'] ?? '');
+$image_url     = ''; // default to empty
+$journal_text  = trim($_POST['journal_text'] ?? '');
+$entry_date    = trim($_POST['entry_date'] ?? '');
 
-$data = json_decode(file_get_contents("php://input"), true);
+// Handle tags as a comma-separated string
+$tags_raw = trim($_POST['tags'] ?? '');
+$tags = array_filter(array_map('trim', explode(',', $tags_raw)));
 
-if (!$data) {
-    http_response_code(400);
-    echo json_encode(["error" => "Invalid JSON input."]);
-    exit;
+// Handle image upload if provided
+if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
+    $imageTmpName = $_FILES['image']['tmp_name'];
+    $imageName = basename($_FILES['image']['name']);
+
+    $uploadDir = __DIR__ . "/uploads/"; // Make sure this directory exists and is writable
+    $relativePath = "uploads/" . uniqid() . "_" . $imageName;
+    $targetPath = __DIR__ . "/" . $relativePath;
+
+    if (move_uploaded_file($imageTmpName, $targetPath)) {
+        $image_url = $relativePath; // Save relative URL for DB
+    } else {
+        http_response_code(500);
+        echo json_encode(["error" => "Failed to upload image."]);
+        exit;
+    }
 }
 
-// Extract fields
-$mood_before   = trim($data['mood_before'] ?? '');
-$mood_after    = trim($data['mood_after'] ?? '');
-$food_name     = trim($data['food_name'] ?? '');
-$food_type     = trim($data['food_type'] ?? '');
-$image_url     = trim($data['image_url'] ?? '');
-$journal_text  = trim($data['journal_text'] ?? '');
-$entry_date    = trim($data['entry_date'] ?? '');
-$tags          = $data['tags'] ?? []; 
-
+// Create and validate journal entry
 $entry = new JournalEntry($user_id, $mood_before, $mood_after, $food_name, $food_type, $image_url, $journal_text, $entry_date);
 
 if (!$entry->isValid()) {
@@ -44,21 +56,18 @@ if (!$entry->isValid()) {
     exit;
 }
 
-
 if (!$entry->save($conn)) {
     http_response_code(500);
     echo json_encode(["error" => "Failed to save journal entry."]);
     exit;
 }
 
-
 $journal_id = $conn->insert_id;
 
-
+// Handle tags
 $tag_ids = [];
 
 foreach ($tags as $tag_name) {
-    $tag_name = trim($tag_name);
     if ($tag_name === '') continue;
 
     if (!JournalTag::exists($conn, $tag_name)) {
@@ -66,7 +75,6 @@ foreach ($tags as $tag_name) {
         $tag->save($conn);
     }
 
-   
     $stmt = $conn->prepare("SELECT tag_id FROM Journal_Tags WHERE tag_name = ?");
     $stmt->bind_param("s", $tag_name);
     $stmt->execute();
@@ -77,12 +85,16 @@ foreach ($tags as $tag_name) {
     }
 }
 
-
+// Map tags to the journal entry
 if (!JournalTagMap::addTagsToJournal($conn, $journal_id, $tag_ids)) {
     http_response_code(500);
     echo json_encode(["error" => "Journal saved, but failed to assign tags."]);
     exit;
 }
 
-echo json_encode(["success" => true, "journal_id" => $journal_id]);
+// Success
+echo json_encode([
+    "success" => true,
+    "journal_id" => $journal_id
+]);
 ?>
