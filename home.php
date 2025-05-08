@@ -1,27 +1,27 @@
 <?php
-session_start(); // Start the session
+session_start();
 
-// Check if user is logged in
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php"); // Redirect to login if not logged in
+    header("Location: login.php");
     exit();
 }
 
-// If logged in, get user details
 $username = $_SESSION['username'];
 $user_id = $_SESSION['user_id'];
 
-// Include the database connection
 include('db.php');
 
-// Fetch user-specific data (e.g., recent journal entries and favorite recipes)
-$query = "SELECT * FROM journal_entries WHERE user_id = '$user_id' ORDER BY created_at DESC LIMIT 5";
-$result = mysqli_query($conn, $query);
-$journal_entries = mysqli_fetch_all($result, MYSQLI_ASSOC);
+try {
+    $stmt = $conn->prepare("SELECT * FROM journal_entries WHERE user_id = :user_id ORDER BY created_at DESC LIMIT 5");
+    $stmt->execute(['user_id' => $user_id]);
+    $journal_entries = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$query_recipes = "SELECT * FROM favorite_recipes WHERE user_id = '$user_id' LIMIT 5";
-$result_recipes = mysqli_query($conn, $query_recipes);
-$favorite_recipes = mysqli_fetch_all($result_recipes, MYSQLI_ASSOC);
+    $stmt = $conn->prepare("SELECT * FROM favorite_recipes WHERE user_id = :user_id LIMIT 5");
+    $stmt->execute(['user_id' => $user_id]);
+    $favorite_recipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Query failed: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +34,6 @@ $favorite_recipes = mysqli_fetch_all($result_recipes, MYSQLI_ASSOC);
 </head>
 <body>
 
-<!-- Header moved outside container for full width -->
 <header>
     <div class="header-content">
         <h1>Welcome, <?php echo htmlspecialchars($username); ?>!</h1>
@@ -43,7 +42,6 @@ $favorite_recipes = mysqli_fetch_all($result_recipes, MYSQLI_ASSOC);
 </header>
 
 <div class="container">
-    <!-- Journal Entries Section -->
     <section>
         <h2>Your Recent Journal Entries</h2>
         <div class="card-container">
@@ -62,7 +60,6 @@ $favorite_recipes = mysqli_fetch_all($result_recipes, MYSQLI_ASSOC);
         </div>
     </section>
 
-    <!-- Favorite Recipes Section -->
     <section>
         <h2>Your Favorite Recipes</h2>
         <div class="card-container">
@@ -85,4 +82,4 @@ $favorite_recipes = mysqli_fetch_all($result_recipes, MYSQLI_ASSOC);
 </div>
 
 </body>
-</html> 
+</html>

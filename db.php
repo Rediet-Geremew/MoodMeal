@@ -1,16 +1,16 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = ""; 
+$password = "";
 $dbname = "mood_meal";
-$port = 3307; 
+$port = 3307;
 
+try {
+    $conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $password);
 
-$conn = mysqli_connect($servername, $username, $password, $dbname, $port);
-
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+ 
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
 }
 ?>
- 
