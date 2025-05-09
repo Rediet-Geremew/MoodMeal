@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MoodMeal - Login / Sign Up</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 30px;
+      background: #ffffffd9;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+    .toggle-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    .toggle-buttons button {
+      flex: 1;
+      padding: 10px;
+      background: #eee;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .toggle-buttons button.active {
+      background-color: #ff6f61;
+      color: white;
+    }
+    form {
+      display: none;
+    }
+    form.active {
+      display: block;
+    }
+    input, button.submit-btn {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button.submit-btn {
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    button.submit-btn:hover {
+      background-color: #e9554a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="toggle-buttons">
+      <button id="loginBtn" class="active">Login</button>
+      <button id="signupBtn">Sign Up</button>
+    </div>
+    <form id="loginForm" class="active" method="POST" action="php/login.php">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button class="submit-btn" type="submit">Login</button>
+    </form>
+    <form id="signupForm" method="POST" action="php/signup.php">
+      <input type="text" name="username" placeholder="Name" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button class="submit-btn" type="submit">Sign Up</button>
+    </form>
+  </div>
+  <script>
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    loginBtn.addEventListener("click", () => {
+      loginForm.classList.add("active");
+      signupForm.classList.remove("active");
+      loginBtn.classList.add("active");
+      signupBtn.classList.remove("active");
+    });
+    signupBtn.addEventListener("click", () => {
+      signupForm.classList.add("active");
+      loginForm.classList.remove("active");
+      signupBtn.classList.add("active");
+      loginBtn.classList.remove("active");
+    });
+  </script>
+</body>
+</html>
