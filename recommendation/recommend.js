@@ -1,75 +1,70 @@
 async function getRecommendations() {
-  const mood = document.getElementById("moodInput").value.trim();
-  if (!mood) return alert("Please enter your mood!");
-
-  try {
-    const response = await fetch("recommendation.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mood })
-    });
-
-    const raw = await response.text();
-    console.log("Raw server response:", raw);
-
-    if (!response.ok) {
-      throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+    const mood = document.getElementById("moodInput").value.trim();
+    if (!mood) {
+        alert("Please enter your mood!");
+        return;
     }
 
-    let data;
     try {
-      data = JSON.parse(raw);
-    } catch (e) {
-      console.error("Failed to parse JSON:", e);
-      throw new Error("The server returned invalid data. Please try again.");
+        const cardsContainer = document.querySelector(".row.g-4");
+        cardsContainer.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-warning"></div><p>Finding perfect recipes for your mood...</p></div>';
+
+        const response = await fetch("recommendation.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mood })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+            throw new Error(errorData?.error || `Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        if (!data.meals?.length) throw new Error("No recipes found for your mood.");
+
+        cardsContainer.innerHTML = "";
+        data.meals.forEach(mealData => {
+            const card = document.createElement("div");
+            card.className = "col-md-4 mb-4";
+            card.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-img-top" 
+                         style="height: 200px; background: url('${mealData.image || 'https://via.placeholder.com/300'}') center/cover no-repeat">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">${mealData.meal}</h5>
+                        <p class="card-text">${mealData.description || 'No description available.'}</p>
+                        <button class="btn btn-warning view-recipe" 
+                                data-id="${mealData.recipe_id}"
+                                data-name="${mealData.meal}"
+                                data-image="${mealData.image}">
+                            View Recipe
+                        </button>
+                    </div>
+                </div>
+            `;
+            cardsContainer.appendChild(card);
+        });
+
+        document.querySelectorAll(".view-recipe").forEach(button => {
+            button.addEventListener("click", () => {
+                const recipeId = button.dataset.id;
+                const recipeName = encodeURIComponent(button.dataset.name);
+                const recipeImage = encodeURIComponent(button.dataset.image);
+    
+                window.location.href = `recipe.html?id=${recipeId}&name=${recipeName}&image=${recipeImage}`;
+            });
+        });
+
+    } catch (error) {
+        console.error("Error:", error);
+        document.querySelector(".row.g-4").innerHTML = `
+            <div class="col-12 text-center text-danger">
+                <p>${error.message}</p>
+                <button onclick="getRecommendations()" class="btn btn-warning">Try Again</button>
+            </div>
+        `;
     }
-
-    if (data.error) {
-      alert("Error: " + data.error);
-      return;
-    }
-
-    if (!data.meals || !Array.isArray(data.meals)) {
-      throw new Error("Invalid data format received from server");
-    }
-
-    const cardsContainer = document.querySelector(".row.g-4");
-    cardsContainer.innerHTML = "";
-
-    data.meals.forEach((mealData) => {
-      const meal = mealData.meal || "Unknown Meal";
-      const description = mealData.description || "No description available";
-      const image = mealData.image || "fallback/fallback.jpg";
-      const recipeId = mealData.spoonacular_id || ""; 
-
-      const card = document.createElement("div");
-      card.className = "col-md-4";
-      card.innerHTML = `
-        <div class="card h-100 text-center">
-          <div class="bg-light rounded-top" style="height: 200px; 
-            background-image: url('${image}');
-            background-size: cover;
-            background-position: center;">
-          </div>
-          <div class="card-body">
-            <h5 class="card-title">${meal}</h5>
-            <p class="card-text text-muted">${description}</p>
-            <small class="text-muted d-block mb-2">Prep time may vary</small>
-            <a href="recipe.html?id=${recipeId}" 
-               class="btn btn-outline-warning">
-               View Recipe
-            </a>
-          </div>
-        </div>
-      `;
-      cardsContainer.appendChild(card);
-    });
-  } catch (error) {
-    if (error instanceof TypeError && error.message.includes("failed to fetch")) {
-      alert("Network error: Unable to reach the server. Please check your internet connection or try again later.");
-    } else {
-      alert("An error occurred: " + error.message);
-    }
-    console.error("Error details:", error);
-  }
 }
