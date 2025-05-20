@@ -37,6 +37,7 @@ Return a valid JSON object in this format:
 Return ONLY the JSON object, no explanation.
 EOD;
 
+// Get AI recommendations
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "https://openrouter.ai/api/v1/chat/completions");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -48,9 +49,8 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
     "X-Title: MoodMeal"
 ]);
 
-$model = "openai/gpt-3.5-turbo";
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-    "model" => $model,
+    "model" => "openai/gpt-3.5-turbo",
     "messages" => [
         ["role" => "system", "content" => "You are a helpful assistant that replies with only valid JSON."],
         ["role" => "user", "content" => $prompt]
@@ -74,35 +74,59 @@ if (!$mealsData || !isset($mealsData["meals"])) {
     exit;
 }
 
-$finalMeals = [];
+// Verify meals with Spoonacular
+$validMeals = [];
 foreach ($mealsData["meals"] as $item) {
-    $mealName = urlencode($item["meal"]);
+    $mealName = $item["meal"];
     $description = $item["description"];
-    $image = null;
-    $recipeLink = null;
-    $recipeId = null;
 
-    $spoonacularUrl = "https://api.spoonacular.com/recipes/complexSearch?query=$mealName&number=1&apiKey=$spoonacularApiKey";
+    // Search Spoonacular for this meal
+    $spoonacularUrl = "https://api.spoonacular.com/recipes/complexSearch?" .
+        http_build_query([
+            'apiKey' => $spoonacularApiKey,
+            'query' => $mealName,
+            'number' => 1
+        ]);
+
     $spoonacularResponse = @file_get_contents($spoonacularUrl);
 
     if ($spoonacularResponse !== false) {
         $spoonacularData = json_decode($spoonacularResponse, true);
 
         if (!empty($spoonacularData["results"])) {
-            $dbMeal = $spoonacularData["results"][0];
-            $image = $dbMeal["image"] ?? "https://via.placeholder.com/150";
-            $recipeLink = $dbMeal["sourceUrl"] ?? "#";
-            $recipeId = $dbMeal["id"] ?? null;
+            $result = $spoonacularData["results"][0];
+            $validMeals[] = [
+                "meal" => $mealName,
+                "description" => $description,
+                "image" => $result["image"] ?? "https://via.placeholder.com/300",
+                "spoonacular_id" => $result["id"],
+                "readyInMinutes" => 0 // Will be filled later
+            ];
+
+            // Stop if we have enough valid meals
+            if (count($validMeals) >= 3) break;
         }
     }
-
-    $finalMeals[] = [
-        "meal" => $item["meal"],
-        "description" => $description,
-        "image" => $image ?? "https://via.placeholder.com/150",
-        "recipe_link" => $recipeLink ?? "#",
-        "recipe_id" => $recipeId
-    ];
 }
 
-echo json_encode(["meals" => $finalMeals], JSON_PRETTY_PRINT);
+// If no valid meals found, return error
+if (empty($validMeals)) {
+    echo json_encode(["error" => "No valid recipes found for your mood in our database"]);
+    exit;
+}
+
+// Get additional details for valid meals
+foreach ($validMeals as &$meal) {
+    $detailsUrl = "https://api.spoonacular.com/recipes/{$meal['spoonacular_id']}/information?" .
+        http_build_query(['apiKey' => $spoonacularApiKey]);
+
+    $detailsResponse = @file_get_contents($detailsUrl);
+
+    if ($detailsResponse !== false) {
+        $details = json_decode($detailsResponse, true);
+        $meal["readyInMinutes"] = $details["readyInMinutes"] ?? 0;
+        $meal["image"] = $details["image"] ?? $meal["image"];
+    }
+}
+
+echo json_encode(["meals" => $validMeals]);

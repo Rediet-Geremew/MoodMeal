@@ -7,7 +7,7 @@ async function getRecommendations() {
 
     try {
         const cardsContainer = document.querySelector(".row.g-4");
-        cardsContainer.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-warning"></div><p>Finding perfect recipes for your mood...</p></div>';
+        cardsContainer.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-warning"></div><p>Finding recipes for your mood...</p></div>';
 
         const response = await fetch("recommendation.php", {
             method: "POST",
@@ -36,8 +36,9 @@ async function getRecommendations() {
                     <div class="card-body">
                         <h5 class="card-title">${mealData.meal}</h5>
                         <p class="card-text">${mealData.description || 'No description available.'}</p>
+                        <p class="text-muted small">Ready in ${mealData.readyInMinutes || 'N/A'} minutes</p>
                         <button class="btn btn-warning view-recipe" 
-                                data-id="${mealData.recipe_id}"
+                                data-id="${mealData.spoonacular_id}"
                                 data-name="${mealData.meal}"
                                 data-image="${mealData.image}">
                             View Recipe
@@ -51,9 +52,13 @@ async function getRecommendations() {
         document.querySelectorAll(".view-recipe").forEach(button => {
             button.addEventListener("click", () => {
                 const recipeId = button.dataset.id;
+                if (!recipeId) {
+                    alert("This recipe is not available in our database");
+                    return;
+                }
                 const recipeName = encodeURIComponent(button.dataset.name);
                 const recipeImage = encodeURIComponent(button.dataset.image);
-    
+                
                 window.location.href = `recipe.html?id=${recipeId}&name=${recipeName}&image=${recipeImage}`;
             });
         });
